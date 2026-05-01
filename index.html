@@ -2703,6 +2703,9 @@ function unlockApp() {
   loginOverlay.style.display = 'none';
   document.getElementById('app').classList.remove('locked');
   initApp();
+  // Restore last known cloud size from localStorage (anti-shrink protection)
+  const lastSize = parseInt(localStorage.getItem('artcol_last_known_size') || '0', 10);
+  if (lastSize > 0) CLOUD_LAST_KNOWN_SIZE = lastSize;
   // If cloud was enabled, try to restore session silently
   if (isCloudEnabled()) {
     initSupabase();
@@ -2713,32 +2716,56 @@ function unlockApp() {
           updateCloudStatus();
           // Pull on start (in case data was updated on another device)
           tryInitialCloudPull();
+        } else {
+          // No session, mark ready anyway (no risk of auto-push without session)
+          CLOUD_READY = true;
         }
-      });
+      }).catch(() => { CLOUD_READY = true; });
+    } else {
+      CLOUD_READY = true;
     }
+  } else {
+    // Cloud disabled — pushes won't run anyway, but mark ready for clean state
+    CLOUD_READY = true;
   }
 }
 
 async function tryInitialCloudPull() {
   // On initial load, check if remote is newer than what we have. If so, pull.
-  const vault = await cloudPull();
-  if (!vault) return;
-  // Compare with local: we use localStorage timestamp on the encrypted blob
-  const localPushedAt = localStorage.getItem('artcol_last_push_at');
-  if (localPushedAt && new Date(vault.updated_at) <= new Date(localPushedAt)) return;
-  // Remote is newer → pull silently
   try {
-    const dec = await decrypt(CRYPTO_KEY, JSON.stringify({ iv: vault.iv, ct: vault.ciphertext }));
-    USER_DATA = JSON.parse(dec);
-    if (!USER_DATA.documents) USER_DATA.documents = [];
-    if (!USER_DATA.bcs) USER_DATA.bcs = {};
-    if (!USER_DATA.days) USER_DATA.days = {};
-    await saveDataEncrypted(USER_DATA);
-    // Re-render everything
-    renderStats(); renderCalendar(); renderProgram(); renderJournal(); renderDocuments();
-    showToast('☁️ Données mises à jour depuis le cloud');
-  } catch (e) {
-    console.warn('Initial pull failed', e);
+    const vault = await cloudPull();
+    if (!vault) {
+      CLOUD_READY = true;
+      return;
+    }
+    // Track the cloud size so shrink-protection can detect dangerous pushes
+    CLOUD_LAST_KNOWN_SIZE = vault.size_bytes || 0;
+    localStorage.setItem('artcol_last_known_size', String(CLOUD_LAST_KNOWN_SIZE));
+
+    const localPushedAt = localStorage.getItem('artcol_last_push_at');
+    if (localPushedAt && new Date(vault.updated_at) <= new Date(localPushedAt)) {
+      CLOUD_READY = true;
+      return;
+    }
+    // Remote is newer → pull silently
+    try {
+      const dec = await decrypt(CRYPTO_KEY, JSON.stringify({ iv: vault.iv, ct: vault.ciphertext }));
+      USER_DATA = JSON.parse(dec);
+      if (!USER_DATA.documents) USER_DATA.documents = [];
+      if (!USER_DATA.bcs) USER_DATA.bcs = {};
+      if (!USER_DATA.days) USER_DATA.days = {};
+      if (!USER_DATA.config) USER_DATA.config = {};
+      if (!USER_DATA.ai) USER_DATA.ai = { history: [] };
+      await saveDataEncrypted(USER_DATA);
+      renderStats(); renderCalendar(); renderProgram(); renderJournal(); renderDocuments();
+      showToast('☁️ Données mises à jour depuis le cloud');
+    } catch (e) {
+      console.warn('Initial pull decrypt failed', e);
+    }
+  } finally {
+    // ALWAYS unblock pushes after initial pull attempt (success or failure)
+    CLOUD_READY = true;
+    console.log('[cloud] Ready, pushes unblocked');
   }
 }
 
@@ -4738,6 +4765,8 @@ let CLOUD_USER = null;
 let CLOUD_LAST_SYNC = null;
 let CLOUD_SYNC_PENDING = false;
 let CLOUD_PUSH_TIMER = null;
+let CLOUD_READY = false; // True when initial pull is done — blocks pushes until then
+let CLOUD_LAST_KNOWN_SIZE = 0; // Last known cloud size, for shrink-protection
 
 function initSupabase() {
   if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
@@ -4790,13 +4819,33 @@ async function cloudSignOut() {
   updateCloudStatus();
 }
 
-async function cloudPush() {
+async function cloudPush(opts) {
+  opts = opts || {};
+  const isManual = opts.manual === true;
   if (!SUPA || !CLOUD_USER || !CRYPTO_KEY) return false;
+
+  // SAFETY 1 — Block automatic pushes until initial pull is done
+  if (!isManual && !CLOUD_READY) {
+    console.warn('[cloud] Push bloqué : initial pull pas encore fini');
+    return false;
+  }
+
   try {
     CLOUD_SYNC_PENDING = true;
     updateCloudStatus();
     const enc = await encrypt(CRYPTO_KEY, JSON.stringify(USER_DATA));
     const { iv, ct } = JSON.parse(enc);
+    const newSize = ct.length;
+
+    // SAFETY 2 — Shrink protection: refuse automatic pushes that would shrink vault > 50%
+    if (!isManual && CLOUD_LAST_KNOWN_SIZE > 1000 && newSize < CLOUD_LAST_KNOWN_SIZE * 0.5) {
+      CLOUD_SYNC_PENDING = false;
+      console.warn(`[cloud] Push refusé : taille passerait de ${CLOUD_LAST_KNOWN_SIZE} → ${newSize} bytes (-${Math.round((1-newSize/CLOUD_LAST_KNOWN_SIZE)*100)}%). Sécurité anti-écrasement.`);
+      updateCloudStatus('error');
+      showToast('⚠️ Sync refusée : suppression massive détectée. Si voulu, utilise "Forcer push".', 'warning');
+      return false;
+    }
+
     const salt = localStorage.getItem(STORAGE_KEY_SALT);
     const verifier = localStorage.getItem(STORAGE_KEY_VERIFIER);
     const { error } = await SUPA.from('vault').upsert({
@@ -4806,7 +4855,7 @@ async function cloudPush() {
       iv,
       salt,
       verifier,
-      size_bytes: ct.length,
+      size_bytes: newSize,
       version: 1
     }, { onConflict: 'user_id,namespace' });
     CLOUD_SYNC_PENDING = false;
@@ -4816,7 +4865,9 @@ async function cloudPush() {
       return false;
     }
     CLOUD_LAST_SYNC = new Date();
+    CLOUD_LAST_KNOWN_SIZE = newSize;
     localStorage.setItem('artcol_last_push_at', CLOUD_LAST_SYNC.toISOString());
+    localStorage.setItem('artcol_last_known_size', String(newSize));
     updateCloudStatus();
     return true;
   } catch (e) {
@@ -4999,7 +5050,7 @@ async function activateCloud() {
     localStorage.setItem(STORAGE_KEY_CLOUD_ENABLED, '1');
     localStorage.setItem(STORAGE_KEY_CLOUD_EMAIL, email);
     showToast('☁️ Cloud activé — premier upload…');
-    await cloudPush();
+    await cloudPush({ manual: true });
     closeModal();
     updateCloudStatus();
     showToast('✅ Sync cloud opérationnelle');
@@ -5013,7 +5064,7 @@ async function activateCloud() {
 
 async function manualCloudPush() {
   showToast('☁️ Upload en cours…');
-  const ok = await cloudPush();
+  const ok = await cloudPush({ manual: true });
   showToast(ok ? '✅ Push réussi' : '❌ Push échoué');
 }
 
