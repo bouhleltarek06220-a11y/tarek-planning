@@ -1749,6 +1749,166 @@ h1, h2, h3, h4, h5 {
 /* Hidden file input */
 .hidden-file-input { display: none; }
 
+/* ════════ AI CHAT (Xiaomi) ════════ */
+.ai-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 16px 16px 0 0;
+  border-bottom: none;
+}
+.ai-chat-title { display: flex; align-items: center; gap: 12px; }
+.ai-chat-avatar {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--neon-lime), var(--neon-violet));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: var(--shadow-glow-sm);
+}
+.ai-chat-actions { display: flex; gap: 8px; align-items: center; }
+
+.ai-chat-messages {
+  background: var(--bg-elevated);
+  border-left: 1px solid var(--border-default);
+  border-right: 1px solid var(--border-default);
+  min-height: 380px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-msg { display: flex; gap: 10px; align-items: flex-start; max-width: 92%; }
+.ai-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.ai-msg-avatar {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.ai-msg.user .ai-msg-avatar { background: var(--bg-overlay); }
+.ai-msg.assistant .ai-msg-avatar { background: linear-gradient(135deg, var(--neon-lime), var(--neon-violet)); }
+
+.ai-msg-bubble {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--bg-deep);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ai-msg.user .ai-msg-bubble {
+  background: rgba(200, 245, 58, 0.08);
+  border-color: rgba(200, 245, 58, 0.25);
+}
+.ai-msg-bubble strong { color: var(--neon-lime); font-weight: 600; }
+.ai-msg-bubble code {
+  background: var(--bg-overlay);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.ai-tool-call {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--neon-orange);
+  background: rgba(255, 181, 71, 0.08);
+  border-left: 2px solid var(--neon-orange);
+  padding: 8px 10px;
+  border-radius: 4px;
+  margin: 6px 0;
+}
+.ai-tool-result {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--success);
+  margin-top: 4px;
+  padding-left: 8px;
+}
+.ai-tool-error { color: var(--danger); }
+
+.ai-chat-input-row {
+  display: flex;
+  gap: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 0 0 16px 16px;
+  padding: 16px 20px;
+  align-items: flex-end;
+}
+.ai-chat-input-row textarea {
+  flex-grow: 1;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 44px;
+}
+.ai-chat-input-row textarea:focus { outline: none; border-color: var(--neon-lime); box-shadow: var(--shadow-glow-sm); }
+.ai-chat-input-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ai-typing {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+.ai-typing-dot {
+  width: 6px; height: 6px;
+  background: var(--neon-lime);
+  border-radius: 50%;
+  animation: pulseGlow 1.2s ease-in-out infinite;
+}
+
+.ai-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+.ai-empty-state .icon { font-size: 56px; margin-bottom: 12px; }
+.ai-empty-state .examples {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.ai-empty-state .examples .ex {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-block;
+  max-width: 460px;
+  margin: 0 auto;
+  text-align: left;
+}
+.ai-empty-state .examples .ex:hover { border-color: var(--neon-lime); color: var(--neon-lime); }
+
 /* ════════ DOCUMENTS ════════ */
 .docs-toolbar {
   display: flex;
@@ -2020,6 +2180,7 @@ h1, h2, h3, h4, h5 {
     <button class="tab" data-tab="list">📋 Liste détaillée <span class="tab-count" id="listCount"></span></button>
     <button class="tab" data-tab="program">🎯 Programme par BC</button>
     <button class="tab" data-tab="documents">📁 Documents <span class="tab-count" id="docsCount"></span></button>
+    <button class="tab" data-tab="ai">🤖 IA Xiaomi</button>
     <button class="tab" data-tab="journal">📓 Mon journal <span class="tab-count" id="journalCount"></span></button>
   </nav>
 
@@ -2102,6 +2263,57 @@ h1, h2, h3, h4, h5 {
     <div class="docs-grid" id="docsGrid"></div>
   </section>
 
+  <section class="tab-content" id="tab-ai">
+    <div id="aiSetupView" style="display:none;">
+      <h3 class="section-title">🤖 Configurer Xiaomi</h3>
+      <p class="section-subtitle">Pour activer ton agent IA, colle ta clé API Anthropic. Elle sera chiffrée localement avec ton mot de passe — jamais envoyée à Supabase ni à personne d'autre.</p>
+      <div style="max-width:560px;margin:24px 0;">
+        <div class="login-info" style="margin:0 0 20px;">
+          🔐 <strong>Sécurité maximale.</strong> La clé est stockée chiffrée AES-256 dans ton vault local + cloud. À chaque appel IA, elle est déchiffrée temporairement en RAM uniquement, puis l'appel HTTPS va directement vers api.anthropic.com (jamais via un tiers).
+        </div>
+        <div class="login-info" style="margin:0 0 20px;border-left-color:var(--neon-orange);">
+          ⚠️ <strong>Coût.</strong> Chaque message envoie ton planning + l'historique récent à Anthropic. Pour Sonnet 4.6, compte ~0.005-0.02$ par échange. Tu peux changer de modèle (Haiku = 5x moins cher).
+        </div>
+        <div class="modal-field" style="margin-bottom:16px;">
+          <div class="modal-field-label">Clé API Anthropic</div>
+          <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." class="search-input" style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:12px;">
+          <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Tu peux en créer une sur <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--neon-lime);">console.anthropic.com/settings/keys</a></div>
+        </div>
+        <div class="modal-field" style="margin-bottom:16px;">
+          <div class="modal-field-label">Modèle par défaut</div>
+          <select id="aiModelSelect" class="filter-select" style="margin-top:6px;"></select>
+        </div>
+        <button class="btn-primary" id="aiSaveKeyBtn" style="width:auto;padding:12px 24px;">🔐 Chiffrer & activer Xiaomi</button>
+        <div class="login-error" id="aiSetupError"></div>
+      </div>
+    </div>
+
+    <div id="aiChatView" style="display:none;">
+      <div class="ai-chat-header">
+        <div class="ai-chat-title">
+          <div class="ai-chat-avatar">🌸</div>
+          <div>
+            <h3 style="font-size:18px;margin:0;">Xiaomi</h3>
+            <div style="font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;" id="aiCurrentModel"></div>
+          </div>
+        </div>
+        <div class="ai-chat-actions">
+          <select id="aiModelSelectChat" class="filter-select" style="width:auto;font-size:12px;padding:6px 10px;"></select>
+          <button class="btn-icon" id="aiClearBtn" title="Effacer la conversation">🗑️</button>
+          <button class="btn-icon danger" id="aiResetKeyBtn" title="Changer la clé API">🔑</button>
+        </div>
+      </div>
+      <div class="ai-chat-messages" id="aiChatMessages"></div>
+      <div class="ai-chat-input-row">
+        <textarea id="aiInput" placeholder="Demande à Xiaomi… (ex: 'Ajoute une alarme demain à 8h pour appeler Najib', 'Marque le module Onboarding comme validé', 'Que dois-je préparer cette semaine ?')" rows="2"></textarea>
+        <button class="btn-primary" id="aiSendBtn" style="width:auto;padding:0 20px;margin:0;">Envoyer</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:8px;font-family:'JetBrains Mono',monospace;text-align:center;">
+        🔐 Ta clé est chiffrée localement · Conversations syncées via cloud zero-knowledge · Xiaomi peut modifier ton planning (alarmes, notes, statuts modules…)
+      </div>
+    </div>
+  </section>
+
   <section class="tab-content" id="tab-journal">
     <h3 class="section-title">Mon journal de bord</h3>
     <p class="section-subtitle">Tous tes jours annotés. Clique pour rouvrir et compléter.</p>
@@ -2177,6 +2389,18 @@ const DOC_CATEGORIES = [
   { k: 'justificatif', l: 'Justifs', e: '🧾', c: '#8a96ad' },
   { k: 'other', l: 'Autres', e: '📦', c: '#8a96ad' }
 ];
+
+// AI agent configuration
+const AI_API_URL = 'https://api.anthropic.com/v1/messages';
+const AI_DEFAULT_MODEL = 'claude-sonnet-4-6';
+const AI_AVAILABLE_MODELS = [
+  { k: 'claude-opus-4-7', l: 'Opus 4.7 (max intelligent, plus cher)' },
+  { k: 'claude-opus-4-6', l: 'Opus 4.6 (intelligent)' },
+  { k: 'claude-sonnet-4-6', l: 'Sonnet 4.6 (équilibre — recommandé)' },
+  { k: 'claude-haiku-4-5-20251001', l: 'Haiku 4.5 (rapide & économe)' }
+];
+const AI_MAX_HISTORY_MESSAGES = 30;
+const AI_MAX_TOKENS = 4096;
 
 const TODAY = new Date();
 const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -2259,23 +2483,25 @@ async function tryUnlock(password) {
 
 async function loadDataDecrypted() {
   const enc = localStorage.getItem(STORAGE_KEY_DATA);
-  if (!enc) return { days: {}, bcs: {}, documents: [] };
+  if (!enc) return { days: {}, bcs: {}, documents: [], config: {}, ai: { history: [] } };
   try {
     const parsed = JSON.parse(await decrypt(CRYPTO_KEY, enc));
     if (!parsed.days && !parsed.bcs) {
       const looksLikeOld = Object.keys(parsed).some(k => /^\d{4}-\d{2}-\d{2}$/.test(k));
       if (looksLikeOld) {
-        return { days: parsed, bcs: {}, documents: [] };
+        return { days: parsed, bcs: {}, documents: [], config: {}, ai: { history: [] } };
       }
     }
     return {
       days: parsed.days || {},
       bcs: parsed.bcs || {},
-      documents: parsed.documents || []
+      documents: parsed.documents || [],
+      config: parsed.config || {},
+      ai: parsed.ai || { history: [] }
     };
   } catch (e) {
     console.error('Decrypt error', e);
-    return { days: {}, bcs: {}, documents: [] };
+    return { days: {}, bcs: {}, documents: [], config: {}, ai: { history: [] } };
   }
 }
 
@@ -2287,7 +2513,7 @@ async function saveDataEncrypted(data) {
 // ══════════════════════════════════════════════════════════
 // USER DATA STORE (per day + per BC)
 // ══════════════════════════════════════════════════════════
-let USER_DATA = { days: {}, bcs: {}, documents: [] };
+let USER_DATA = { days: {}, bcs: {}, documents: [], config: {}, ai: { history: [] } };
 
 function getDay(dateKey) {
   if (!USER_DATA.days[dateKey]) {
@@ -2441,7 +2667,7 @@ loginBtn.addEventListener('click', async () => {
         return;
       }
       await setupAccount(pwd);
-      USER_DATA = { days: {}, bcs: {}, documents: [] };
+      USER_DATA = { days: {}, bcs: {}, documents: [], config: {}, ai: { history: [] } };
       unlockApp();
     } else {
       const ok = await tryUnlock(pwd);
@@ -2519,7 +2745,7 @@ async function tryInitialCloudPull() {
 document.getElementById('logoutBtn').addEventListener('click', () => {
   if (confirm('Verrouiller le planning ?')) {
     CRYPTO_KEY = null;
-    USER_DATA = { days: {}, bcs: {}, documents: [] };
+    USER_DATA = { days: {}, bcs: {}, documents: [], config: {}, ai: { history: [] } };
     location.reload();
   }
 });
@@ -2578,6 +2804,8 @@ function initApp() {
   renderJournal();
   renderDocuments();
   setupAddDocBtn();
+  showAiView();
+  setupAiHandlers();
 
   if (TODAY >= new Date('2026-03-01') && TODAY <= new Date('2027-07-01')) {
     currentMonth = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
@@ -4812,6 +5040,677 @@ async function disableCloud() {
 }
 
 // ══════════════════════════════════════════════════════════
+// AI XIAOMI — Agent avec tool use
+// ══════════════════════════════════════════════════════════
+let AI_BUSY = false;
+
+function getApiKey() {
+  return USER_DATA.config?.anthropicKey || null;
+}
+function setApiKey(key) {
+  if (!USER_DATA.config) USER_DATA.config = {};
+  USER_DATA.config.anthropicKey = key;
+  scheduleSave();
+}
+function clearApiKey() {
+  if (USER_DATA.config) delete USER_DATA.config.anthropicKey;
+  scheduleSave();
+}
+function getAiModel() {
+  return USER_DATA.config?.aiModel || AI_DEFAULT_MODEL;
+}
+function setAiModel(model) {
+  if (!USER_DATA.config) USER_DATA.config = {};
+  USER_DATA.config.aiModel = model;
+  scheduleSave();
+}
+
+// ── Tool definitions for Claude ─────────────────────
+function getToolDefinitions() {
+  return [
+    {
+      name: 'add_alarm',
+      description: 'Ajoute une alarme avec rappel sur un jour précis du planning.',
+      input_schema: {
+        type: 'object',
+        properties: {
+          date: { type: 'string', description: 'Date au format YYYY-MM-DD' },
+          time: { type: 'string', description: "Heure au format HH:MM (24h), ex: '08:30'" },
+          message: { type: 'string', description: 'Message du rappel' }
+        },
+        required: ['date', 'time', 'message']
+      }
+    },
+    {
+      name: 'add_task',
+      description: 'Ajoute une tâche à faire sur un jour précis.',
+      input_schema: {
+        type: 'object',
+        properties: {
+          date: { type: 'string', description: 'Date YYYY-MM-DD' },
+          text: { type: 'string', description: 'Texte de la tâche' }
+        },
+        required: ['date', 'text']
+      }
+    },
+    {
+      name: 'complete_task',
+      description: 'Marque comme faite une tâche existante (par son texte exact ou approximatif) sur un jour donné.',
+      input_schema: {
+        type: 'object',
+        properties: {
+          date: { type: 'string' },
+          task_text: { type: 'string', description: 'Texte de la tâche à valider (matching partiel insensible à la casse)' }
+        },
+        required: ['date', 'task_text']
+      }
+    },
+    {
+      name: 'add_note_to_day',
+      description: "Ajoute (ou append) une note markdown à un jour. Si une note existe, le nouveau texte est ajouté à la suite après une ligne vide.",
+      input_schema: {
+        type: 'object',
+        properties: {
+          date: { type: 'string' },
+          note: { type: 'string', description: 'Texte markdown à ajouter' },
+          replace: { type: 'boolean', description: 'Si true, remplace la note existante au lieu d\'ajouter. Default false.' }
+        },
+        required: ['date', 'note']
+      }
+    },
+    {
+      name: 'set_day_mood',
+      description: "Définit l'humeur d'un jour parmi: 🤩 Au top, 😊 Bien, 😐 Neutre, 😓 Difficile, 😴 Crevé, 🔥 Feu",
+      input_schema: {
+        type: 'object',
+        properties: {
+          date: { type: 'string' },
+          mood: { type: 'string', description: 'Un des emojis: 🤩 😊 😐 😓 😴 🔥' }
+        },
+        required: ['date', 'mood']
+      }
+    },
+    {
+      name: 'add_tag_to_day',
+      description: "Ajoute un tag (hashtag perso) à un jour.",
+      input_schema: {
+        type: 'object',
+        properties: {
+          date: { type: 'string' },
+          tag: { type: 'string' }
+        },
+        required: ['date', 'tag']
+      }
+    },
+    {
+      name: 'set_module_status',
+      description: "Change le statut d'un module dans un bloc de compétences. Status valides: 'todo', 'progress', 'done'.",
+      input_schema: {
+        type: 'object',
+        properties: {
+          bc_key: { type: 'string', description: "Identifiant du BC: BC1, BC2, BC3, BC4, BC5, ou BC186 (pré-alternance)" },
+          module_name: { type: 'string', description: 'Nom exact du module (matching partiel insensible à la casse accepté)' },
+          status: { type: 'string', enum: ['todo', 'progress', 'done'] }
+        },
+        required: ['bc_key', 'module_name', 'status']
+      }
+    },
+    {
+      name: 'add_tag_to_bc',
+      description: "Ajoute un tag à un bloc de compétences.",
+      input_schema: {
+        type: 'object',
+        properties: {
+          bc_key: { type: 'string' },
+          tag: { type: 'string' }
+        },
+        required: ['bc_key', 'tag']
+      }
+    },
+    {
+      name: 'set_bc_status',
+      description: "Change le statut global d'un BC. Status valides: 'todo', 'progress', 'done', 'review'.",
+      input_schema: {
+        type: 'object',
+        properties: {
+          bc_key: { type: 'string' },
+          status: { type: 'string', enum: ['todo', 'progress', 'done', 'review'] }
+        },
+        required: ['bc_key', 'status']
+      }
+    },
+    {
+      name: 'add_note_to_bc',
+      description: "Append un paragraphe à la note globale d'un BC.",
+      input_schema: {
+        type: 'object',
+        properties: {
+          bc_key: { type: 'string' },
+          note: { type: 'string' }
+        },
+        required: ['bc_key', 'note']
+      }
+    }
+  ];
+}
+
+// ── Tool execution ─────────────────────
+// Helper: render now AND save debounced (so UI is instant, persistence is debounced)
+function renderDayViews() {
+  try { renderCalendar(); } catch(e) {}
+  try { renderJournal(); } catch(e) {}
+}
+function renderBcViews() {
+  try { renderProgram(); } catch(e) {}
+}
+
+function executeAITool(toolName, input) {
+  try {
+    switch (toolName) {
+      case 'add_alarm': {
+        const day = getDay(input.date);
+        if (!day.alarms) day.alarms = [];
+        day.alarms.push({ time: input.time, message: input.message, triggered: false });
+        renderDayViews(); scheduleSave();
+        return { success: true, message: `Alarme ${input.time} ajoutée le ${input.date}` };
+      }
+      case 'add_task': {
+        const day = getDay(input.date);
+        if (!day.tasks) day.tasks = [];
+        day.tasks.push({ text: input.text, done: false });
+        renderDayViews(); scheduleSave();
+        return { success: true, message: `Tâche ajoutée: "${input.text}" le ${input.date}` };
+      }
+      case 'complete_task': {
+        const day = USER_DATA.days[input.date];
+        if (!day || !day.tasks) return { success: false, message: 'Aucune tâche sur ce jour' };
+        const lc = input.task_text.toLowerCase();
+        const idx = day.tasks.findIndex(t => t.text.toLowerCase().includes(lc));
+        if (idx < 0) return { success: false, message: `Aucune tâche correspondant à "${input.task_text}"` };
+        day.tasks[idx].done = true;
+        renderDayViews(); scheduleSave();
+        return { success: true, message: `Tâche "${day.tasks[idx].text}" marquée comme faite` };
+      }
+      case 'add_note_to_day': {
+        const day = getDay(input.date);
+        if (input.replace || !day.notes) {
+          day.notes = input.note;
+        } else {
+          day.notes = day.notes + '\n\n' + input.note;
+        }
+        renderDayViews(); scheduleSave();
+        return { success: true, message: `Note ${input.replace ? 'remplacée' : 'ajoutée'} au ${input.date}` };
+      }
+      case 'set_day_mood': {
+        const day = getDay(input.date);
+        day.mood = input.mood;
+        renderDayViews(); scheduleSave();
+        return { success: true, message: `Mood du ${input.date} → ${input.mood}` };
+      }
+      case 'add_tag_to_day': {
+        const day = getDay(input.date);
+        if (!day.tags) day.tags = [];
+        if (day.tags.includes(input.tag)) return { success: true, message: 'Tag déjà présent' };
+        day.tags.push(input.tag);
+        renderDayViews(); scheduleSave();
+        return { success: true, message: `Tag "${input.tag}" ajouté au ${input.date}` };
+      }
+      case 'set_module_status': {
+        // Find module by partial match
+        const modules = getBcModules(input.bc_key);
+        const lc = input.module_name.toLowerCase();
+        const matched = Object.keys(modules).find(n => n.toLowerCase().includes(lc));
+        if (!matched) return { success: false, message: `Module "${input.module_name}" introuvable dans ${input.bc_key}` };
+        const md = getModuleData(input.bc_key, matched);
+        md.status = input.status;
+        renderBcViews(); scheduleSave();
+        return { success: true, message: `Module "${matched}" → ${input.status}` };
+      }
+      case 'add_tag_to_bc': {
+        const bc = getBC(input.bc_key);
+        if (!bc.tags) bc.tags = [];
+        if (bc.tags.includes(input.tag)) return { success: true, message: 'Tag déjà présent' };
+        bc.tags.push(input.tag);
+        renderBcViews(); scheduleSave();
+        return { success: true, message: `Tag "${input.tag}" ajouté à ${input.bc_key}` };
+      }
+      case 'set_bc_status': {
+        const bc = getBC(input.bc_key);
+        bc.status = input.status;
+        renderBcViews(); scheduleSave();
+        return { success: true, message: `Statut ${input.bc_key} → ${input.status}` };
+      }
+      case 'add_note_to_bc': {
+        const bc = getBC(input.bc_key);
+        bc.notes = (bc.notes || '') + (bc.notes ? '\n\n' : '') + input.note;
+        renderBcViews(); scheduleSave();
+        return { success: true, message: `Note ajoutée à ${input.bc_key}` };
+      }
+      default:
+        return { success: false, message: `Tool inconnu: ${toolName}` };
+    }
+  } catch (e) {
+    return { success: false, message: 'Erreur exécution tool: ' + e.message };
+  }
+}
+
+// ── System prompt builder ─────────────────────
+function buildSystemPrompt() {
+  const today = isoDate(TODAY);
+  const next3 = EVENTS.filter(e => e.startDate >= TODAY).slice(0, 5)
+    .map(e => `- ${formatDate(e.startDate)} ${formatTime(e.startDate)} · ${e.title} (${e.type}, ${e.intervenant || 'TBA'})`).join('\n');
+
+  // BC progress
+  const bcLines = ['BC186', 'BC1', 'BC2', 'BC3', 'BC4', 'BC5'].map(k => {
+    const info = BC_INFO[k];
+    const evts = getBcEvents(k);
+    if (!evts.length) return null;
+    const progress = getBcProgress(k);
+    const userBc = USER_DATA.bcs[k];
+    const status = userBc?.status || 'todo';
+    const tags = userBc?.tags?.length ? ' [' + userBc.tags.join(',') + ']' : '';
+    return `- ${k} ${info.name}: ${progress}% — statut=${status}${tags}`;
+  }).filter(Boolean).join('\n');
+
+  // Today data
+  const todayDay = USER_DATA.days[today];
+  let todayInfo = '';
+  if (todayDay) {
+    const parts = [];
+    if (todayDay.notes) parts.push(`notes: ${todayDay.notes.substring(0, 100)}…`);
+    if (todayDay.tasks?.length) parts.push(`${todayDay.tasks.filter(t=>!t.done).length} tâches en cours`);
+    if (todayDay.alarms?.length) parts.push(`${todayDay.alarms.length} alarme(s)`);
+    if (todayDay.mood) parts.push(`mood: ${todayDay.mood}`);
+    if (parts.length) todayInfo = `\nAujourd'hui (${today}): ${parts.join(', ')}`;
+  }
+
+  return `Tu es **Xiaomi 🌸**, l'agent IA personnel de Tarek (40 ans, électricien en reconversion BizDev). Tu es son OS personnel.
+
+## TAREK
+- Bachelor BizDev à Rocket School du 16 mars 2026 au 23 juin 2027
+- Alternance chez OGHJI (1 sem cours / 3 sem entreprise)
+- Profil : autodidacte perfectionniste, multi-projets (CRM, app iOS ArtColVF, DJ Tarkus, chaîne YouTube), passionné cyber/japon
+- Communique en MAJUSCULES, direct, exigeant
+
+## DATE ACTUELLE
+Aujourd'hui : ${new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} (${today})
+
+## PLANNING GLOBAL
+- 875h total · 278 sessions · 65 semaines
+- Pré-alternance (BC186) : 16 mars → 9 juin 2026 (intensif)
+- Alternance : 12 juin 2026 → 23 juin 2027
+
+## BLOCS DE COMPÉTENCES
+${bcLines}
+
+## PROCHAINES SESSIONS
+${next3}
+${todayInfo}
+
+## TES OUTILS
+Tu peux modifier directement le planning de Tarek via tes tools : ajouter alarmes/tâches/notes/tags/mood sur un jour, valider/changer statut de modules, gérer les BCs.
+
+## STYLE
+- Réponses courtes et utiles, jamais de blabla
+- Ton chaleureux mais direct, façon "petite sœur tech compétente"
+- Tutoie Tarek
+- Emoji 🌸 occasionnel pour signature, autres emojis judicieux
+- Quand tu exécutes des actions, confirme-les en 1 ligne après
+- Si une demande est ambiguë (ex: "demain" sans heure), demande à clarifier ou propose un défaut raisonnable
+- Si Tarek demande quelque chose hors de tes outils, sois honnête et propose une alternative`;
+}
+
+// ── Anthropic API call with tool use loop ─────────────────────
+async function callAnthropic(messages, systemPrompt) {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error('Pas de clé API configurée');
+  const model = getAiModel();
+  const tools = getToolDefinitions();
+
+  const response = await fetch(AI_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: AI_MAX_TOKENS,
+      system: systemPrompt,
+      tools,
+      messages
+    })
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    let errMsg = `HTTP ${response.status}`;
+    try { const j = JSON.parse(errText); errMsg += ': ' + (j.error?.message || errText); } catch {}
+    throw new Error(errMsg);
+  }
+  return response.json();
+}
+
+async function sendChatMessage(userText) {
+  if (AI_BUSY) return;
+  AI_BUSY = true;
+
+  // Push user message
+  if (!USER_DATA.ai) USER_DATA.ai = { history: [] };
+  USER_DATA.ai.history.push({ role: 'user', content: userText, ts: new Date().toISOString() });
+  renderAiChat();
+  scheduleSave();
+
+  // Show typing indicator
+  showAiTyping(true);
+
+  try {
+    // Build API messages from history (last N)
+    const apiMessages = USER_DATA.ai.history.slice(-AI_MAX_HISTORY_MESSAGES).map(m => {
+      // Convert tool_calls/tool_results to API format
+      if (m.role === 'tool_result') {
+        return { role: 'user', content: [{ type: 'tool_result', tool_use_id: m.tool_use_id, content: m.content }] };
+      }
+      if (m.role === 'assistant_with_tools') {
+        return { role: 'assistant', content: m.content };
+      }
+      return { role: m.role, content: m.content };
+    });
+
+    const systemPrompt = buildSystemPrompt();
+
+    // Tool use loop (max 10 iterations to prevent infinite loop)
+    let iterations = 0;
+    let lastResponse = null;
+    let currentMessages = apiMessages;
+
+    while (iterations < 10) {
+      iterations++;
+      lastResponse = await callAnthropic(currentMessages, systemPrompt);
+
+      const stopReason = lastResponse.stop_reason;
+      const blocks = lastResponse.content || [];
+
+      if (stopReason === 'tool_use') {
+        // Save assistant message with tool calls
+        USER_DATA.ai.history.push({
+          role: 'assistant_with_tools',
+          content: blocks,
+          ts: new Date().toISOString()
+        });
+        renderAiChat();
+        scheduleSave();
+
+        // Execute each tool, collect results
+        const toolResults = [];
+        for (const block of blocks) {
+          if (block.type === 'tool_use') {
+            const result = executeAITool(block.name, block.input);
+            const resultStr = JSON.stringify(result);
+            toolResults.push({
+              type: 'tool_result',
+              tool_use_id: block.id,
+              content: resultStr,
+              is_error: !result.success
+            });
+            // Save tool result for chat display
+            USER_DATA.ai.history.push({
+              role: 'tool_result',
+              tool_use_id: block.id,
+              tool_name: block.name,
+              tool_input: block.input,
+              content: resultStr,
+              success: result.success,
+              ts: new Date().toISOString()
+            });
+          }
+        }
+        renderAiChat();
+        scheduleSave();
+
+        // Add assistant + user (tool_results) to currentMessages and loop
+        currentMessages.push({ role: 'assistant', content: blocks });
+        currentMessages.push({ role: 'user', content: toolResults });
+        continue;
+      }
+
+      // end_turn or other final reasons
+      const textParts = blocks.filter(b => b.type === 'text').map(b => b.text).join('\n');
+      USER_DATA.ai.history.push({
+        role: 'assistant',
+        content: textParts || '(réponse vide)',
+        ts: new Date().toISOString()
+      });
+      renderAiChat();
+      scheduleSave();
+      break;
+    }
+
+  } catch (e) {
+    console.error('AI error', e);
+    USER_DATA.ai.history.push({
+      role: 'assistant',
+      content: `❌ Erreur : ${e.message}`,
+      error: true,
+      ts: new Date().toISOString()
+    });
+    renderAiChat();
+    scheduleSave();
+  } finally {
+    AI_BUSY = false;
+    showAiTyping(false);
+    document.getElementById('aiSendBtn').disabled = false;
+  }
+}
+
+// ── UI rendering ─────────────────────
+function showAiTyping(on) {
+  const old = document.getElementById('aiTypingIndicator');
+  if (old) old.remove();
+  if (on) {
+    const el = document.createElement('div');
+    el.id = 'aiTypingIndicator';
+    el.className = 'ai-typing';
+    el.innerHTML = '<span class="ai-typing-dot"></span> Xiaomi réfléchit…';
+    document.getElementById('aiChatMessages').appendChild(el);
+    el.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function renderAiChat() {
+  const container = document.getElementById('aiChatMessages');
+  if (!container) return;
+
+  const history = USER_DATA.ai?.history || [];
+
+  if (history.length === 0) {
+    container.innerHTML = `
+      <div class="ai-empty-state">
+        <div class="icon">🌸</div>
+        <p style="font-size:15px;color:var(--text-primary);margin-bottom:8px;">Salut Tarek, je suis <strong>Xiaomi</strong></p>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Je peux t'aider à gérer ton planning, ajouter des alarmes, valider des modules, prendre des notes…</p>
+        <div class="examples">
+          <div class="ex" onclick="askXiaomiExample(this.textContent)">📅 Que dois-je préparer cette semaine ?</div>
+          <div class="ex" onclick="askXiaomiExample(this.textContent)">🔔 Mets une alarme demain à 8h pour préparer mon café</div>
+          <div class="ex" onclick="askXiaomiExample(this.textContent)">✅ Marque le module Onboarding comme validé</div>
+          <div class="ex" onclick="askXiaomiExample(this.textContent)">📝 Note dans mon journal d'aujourd'hui que j'ai bien dormi</div>
+          <div class="ex" onclick="askXiaomiExample(this.textContent)">🎯 Quel est mon prochain objectif sur BC2 ?</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  let html = '';
+  for (const msg of history) {
+    if (msg.role === 'user') {
+      html += `
+        <div class="ai-msg user">
+          <div class="ai-msg-avatar">👤</div>
+          <div class="ai-msg-bubble">${escapeHtml(msg.content)}</div>
+        </div>`;
+    } else if (msg.role === 'assistant') {
+      const isError = msg.error;
+      html += `
+        <div class="ai-msg assistant">
+          <div class="ai-msg-avatar">🌸</div>
+          <div class="ai-msg-bubble" ${isError ? 'style="border-color:var(--danger);color:var(--danger);"' : ''}>${formatAiText(msg.content)}</div>
+        </div>`;
+    } else if (msg.role === 'assistant_with_tools') {
+      // Show text parts of the assistant's tool_use block
+      const textParts = (msg.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+      const toolCalls = (msg.content || []).filter(b => b.type === 'tool_use');
+      if (textParts || toolCalls.length) {
+        let bubbleContent = '';
+        if (textParts) bubbleContent += formatAiText(textParts) + '\n';
+        for (const tc of toolCalls) {
+          bubbleContent += `<div class="ai-tool-call">⚙️ ${escapeHtml(tc.name)}(${escapeHtml(JSON.stringify(tc.input))})</div>`;
+        }
+        html += `
+          <div class="ai-msg assistant">
+            <div class="ai-msg-avatar">🌸</div>
+            <div class="ai-msg-bubble">${bubbleContent}</div>
+          </div>`;
+      }
+    } else if (msg.role === 'tool_result') {
+      // Show tool result inline (collapsed)
+      let resultText = '';
+      try { const r = JSON.parse(msg.content); resultText = r.message || msg.content; } catch { resultText = msg.content; }
+      html += `<div class="ai-tool-result ${msg.success ? '' : 'ai-tool-error'}">${msg.success ? '✓' : '✗'} ${escapeHtml(resultText)}</div>`;
+    }
+  }
+  container.innerHTML = html;
+  container.scrollTop = container.scrollHeight;
+}
+
+function formatAiText(text) {
+  // Basic markdown : **bold**, *italic*, `code`, line breaks
+  let html = escapeHtml(text);
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  return html;
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function askXiaomiExample(text) {
+  document.getElementById('aiInput').value = text;
+  document.getElementById('aiSendBtn').click();
+}
+
+// ── Setup view + chat view switching ─────────────────────
+function showAiView() {
+  const setupView = document.getElementById('aiSetupView');
+  const chatView = document.getElementById('aiChatView');
+  if (getApiKey()) {
+    setupView.style.display = 'none';
+    chatView.style.display = 'block';
+    populateModelSelects();
+    renderAiChat();
+    document.getElementById('aiCurrentModel').textContent = 'Modèle : ' + getAiModel();
+  } else {
+    setupView.style.display = 'block';
+    chatView.style.display = 'none';
+    populateModelSelects();
+  }
+}
+
+function populateModelSelects() {
+  const cur = getAiModel();
+  const opts = AI_AVAILABLE_MODELS.map(m => `<option value="${m.k}" ${m.k === cur ? 'selected' : ''}>${m.l}</option>`).join('');
+  ['aiModelSelect', 'aiModelSelectChat'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = opts;
+  });
+}
+
+function setupAiHandlers() {
+  // Save key button
+  const saveBtn = document.getElementById('aiSaveKeyBtn');
+  if (saveBtn && !saveBtn.dataset.bound) {
+    saveBtn.dataset.bound = '1';
+    saveBtn.onclick = () => {
+      const errEl = document.getElementById('aiSetupError');
+      errEl.textContent = '';
+      const key = document.getElementById('apiKeyInput').value.trim();
+      if (!key.startsWith('sk-ant-')) {
+        errEl.textContent = '❌ La clé doit commencer par "sk-ant-"';
+        return;
+      }
+      const model = document.getElementById('aiModelSelect').value;
+      setApiKey(key);
+      setAiModel(model);
+      showToast('🔐 Clé chiffrée et stockée');
+      showAiView();
+    };
+  }
+
+  // Reset key
+  const resetBtn = document.getElementById('aiResetKeyBtn');
+  if (resetBtn && !resetBtn.dataset.bound) {
+    resetBtn.dataset.bound = '1';
+    resetBtn.onclick = () => {
+      if (!confirm('Effacer la clé API ? Tu devras la recoller.')) return;
+      clearApiKey();
+      showToast('🔑 Clé effacée');
+      showAiView();
+    };
+  }
+
+  // Clear chat
+  const clearBtn = document.getElementById('aiClearBtn');
+  if (clearBtn && !clearBtn.dataset.bound) {
+    clearBtn.dataset.bound = '1';
+    clearBtn.onclick = () => {
+      if (!confirm('Effacer toute la conversation ?')) return;
+      USER_DATA.ai = { history: [] };
+      renderAiChat();
+      scheduleSave();
+    };
+  }
+
+  // Model change in chat
+  const modelSelChat = document.getElementById('aiModelSelectChat');
+  if (modelSelChat && !modelSelChat.dataset.bound) {
+    modelSelChat.dataset.bound = '1';
+    modelSelChat.onchange = (e) => {
+      setAiModel(e.target.value);
+      document.getElementById('aiCurrentModel').textContent = 'Modèle : ' + e.target.value;
+      showToast('Modèle → ' + e.target.value);
+    };
+  }
+
+  // Send button
+  const sendBtn = document.getElementById('aiSendBtn');
+  if (sendBtn && !sendBtn.dataset.bound) {
+    sendBtn.dataset.bound = '1';
+    sendBtn.onclick = () => {
+      const input = document.getElementById('aiInput');
+      const text = input.value.trim();
+      if (!text || AI_BUSY) return;
+      input.value = '';
+      sendBtn.disabled = true;
+      sendChatMessage(text);
+    };
+  }
+
+  // Enter to send (Shift+Enter for newline)
+  const inputEl = document.getElementById('aiInput');
+  if (inputEl && !inputEl.dataset.bound) {
+    inputEl.dataset.bound = '1';
+    inputEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById('aiSendBtn').click();
+      }
+    });
+  }
+}
+
+// ══════════════════════════════════════════════════════════
 // TABS
 // ══════════════════════════════════════════════════════════
 document.querySelectorAll('.tabs .tab').forEach(tab => {
@@ -4820,6 +5719,19 @@ document.querySelectorAll('.tabs .tab').forEach(tab => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    // Refresh data-driven views (in case IA modified data while on another tab)
+    if (tab.dataset.tab === 'journal') renderJournal();
+    if (tab.dataset.tab === 'calendar') renderCalendar();
+    if (tab.dataset.tab === 'program') renderProgram();
+    if (tab.dataset.tab === 'documents') renderDocuments();
+    if (tab.dataset.tab === 'ai') {
+      showAiView();
+      setupAiHandlers();
+      setTimeout(() => {
+        const inp = document.getElementById('aiInput');
+        if (inp && getApiKey()) inp.focus();
+      }, 100);
+    }
   };
 });
 
