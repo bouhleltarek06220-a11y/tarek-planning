@@ -2775,6 +2775,13 @@ async function tryInitialCloudPull() {
     // ALWAYS unblock pushes after initial pull attempt (success or failure)
     CLOUD_READY = true;
     console.log('[cloud] Ready, pushes unblocked');
+    // Phase 5 — Univers Xiaomi: load shared_config namespace (API key + model)
+    // Cette config est partagée avec Shrine et Brain
+    try {
+      await loadSharedConfig();
+    } catch (e) {
+      console.warn('[shared_config] initial load failed', e);
+    }
   }
 }
 
@@ -5104,25 +5111,105 @@ async function disableCloud() {
 // ══════════════════════════════════════════════════════════
 let AI_BUSY = false;
 
+// ── SHARED_CONFIG namespace (clé API + modèle, partagés entre Shrine/Brain/Planning)
+let SHARED_CONFIG = { anthropicKey: null, aiModel: null };
+let SHARED_SAVE_TIMER = null;
+
 function getApiKey() {
-  return USER_DATA.config?.anthropicKey || null;
+  // Priorité au nouveau namespace shared_config (Univers Xiaomi)
+  // Fallback legacy sur USER_DATA.config (sera supprimé après migration auto)
+  return SHARED_CONFIG?.anthropicKey || USER_DATA?.config?.anthropicKey || null;
 }
 function setApiKey(key) {
-  if (!USER_DATA.config) USER_DATA.config = {};
-  USER_DATA.config.anthropicKey = key;
-  scheduleSave();
+  SHARED_CONFIG.anthropicKey = key;
+  scheduleSaveShared();
+  // Nettoyer le legacy s'il était là
+  if (USER_DATA.config?.anthropicKey) {
+    delete USER_DATA.config.anthropicKey;
+    scheduleSave();
+  }
 }
 function clearApiKey() {
-  if (USER_DATA.config) delete USER_DATA.config.anthropicKey;
-  scheduleSave();
+  SHARED_CONFIG.anthropicKey = null;
+  scheduleSaveShared();
+  if (USER_DATA.config?.anthropicKey) {
+    delete USER_DATA.config.anthropicKey;
+    scheduleSave();
+  }
 }
 function getAiModel() {
-  return USER_DATA.config?.aiModel || AI_DEFAULT_MODEL;
+  return SHARED_CONFIG?.aiModel || USER_DATA?.config?.aiModel || AI_DEFAULT_MODEL;
 }
 function setAiModel(model) {
-  if (!USER_DATA.config) USER_DATA.config = {};
-  USER_DATA.config.aiModel = model;
-  scheduleSave();
+  SHARED_CONFIG.aiModel = model;
+  scheduleSaveShared();
+}
+
+// ── Multi-namespace cloud sync (shared_config)
+async function loadSharedConfig() {
+  if (!SUPA || !CLOUD_USER || !CRYPTO_KEY) return;
+  try {
+    const { data, error } = await SUPA.from('vault')
+      .select('*')
+      .eq('user_id', CLOUD_USER.id)
+      .eq('namespace', 'shared_config')
+      .maybeSingle();
+    if (error) { console.warn('[shared_config] load error', error); return; }
+    if (!data) {
+      // Pas de shared_config existant. Migration auto si on a la clé dans le legacy.
+      if (USER_DATA.config?.anthropicKey) {
+        SHARED_CONFIG.anthropicKey = USER_DATA.config.anthropicKey;
+        SHARED_CONFIG.aiModel = USER_DATA.config.aiModel || AI_DEFAULT_MODEL;
+        const ok = await saveSharedConfig();
+        if (ok) {
+          console.log('[Migration] Clé API + modèle migrés vers shared_config');
+          // Nettoyer le legacy après migration réussie
+          delete USER_DATA.config.anthropicKey;
+          delete USER_DATA.config.aiModel;
+          scheduleSave();
+        }
+      }
+      return;
+    }
+    // Décrypter
+    const dec = await decrypt(CRYPTO_KEY, JSON.stringify({ iv: data.iv, ct: data.ciphertext }));
+    SHARED_CONFIG = JSON.parse(dec);
+    if (typeof SHARED_CONFIG !== 'object' || SHARED_CONFIG === null) SHARED_CONFIG = {};
+    console.log('[shared_config] Chargé OK');
+  } catch (e) {
+    console.warn('[shared_config] load exception', e);
+  }
+}
+
+async function saveSharedConfig() {
+  if (!SUPA || !CLOUD_USER || !CRYPTO_KEY) return false;
+  try {
+    const enc = await encrypt(CRYPTO_KEY, JSON.stringify(SHARED_CONFIG));
+    const { iv, ct } = JSON.parse(enc);
+    const salt = localStorage.getItem(STORAGE_KEY_SALT);
+    const verifier = localStorage.getItem(STORAGE_KEY_VERIFIER);
+    const { error } = await SUPA.from('vault').upsert({
+      user_id: CLOUD_USER.id,
+      namespace: 'shared_config',
+      ciphertext: ct,
+      iv,
+      salt,
+      verifier,
+      size_bytes: ct.length,
+      version: 1
+    }, { onConflict: 'user_id,namespace' });
+    if (error) { console.warn('[shared_config] save error', error); return false; }
+    console.log('[shared_config] Sauvé');
+    return true;
+  } catch (e) {
+    console.warn('[shared_config] save exception', e);
+    return false;
+  }
+}
+
+function scheduleSaveShared() {
+  clearTimeout(SHARED_SAVE_TIMER);
+  SHARED_SAVE_TIMER = setTimeout(() => saveSharedConfig(), 1500);
 }
 
 // ── Tool definitions for Claude ─────────────────────
